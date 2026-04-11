@@ -1,1 +1,0 @@
-print("Welcom  to the ai project")
