@@ -28,8 +28,14 @@ def alpha_beta(state , depth ,alpha , beta,is_maximising, results):
             if beta <= alpha :
                 break
         return min_eval
-    
 
+def best_sequence(state,best):
+    sequence=[]
+    return sequence  
+
+def minimax(self,state , depth ,alpha , beta,is_maximising ):
+    return
+    
 #should be moved later  
 def is_conflict_avoided(results):
     if  results['eval'] != -10000 and results['conflicts'] == 0 :
