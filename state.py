@@ -14,6 +14,9 @@ class State:
 def is_conflict(state):
     return
 
+def is_terminal(state):
+    return
+
 def evaluate(state):
     return
 
