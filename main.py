@@ -1,5 +1,4 @@
-from algorithms import alpha_beta, is_conflict_avoided, best_sequence
-from minimax import minimax
+from algorithms import alpha_beta, is_conflict_avoided, best_sequence, minimax
 from state import Aircraft ,State 
 #config 0
 A = Aircraft(8,5)
