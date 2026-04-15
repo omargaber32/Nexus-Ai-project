@@ -20,8 +20,37 @@ def is_terminal(state):
 def evaluate(state):
     return
 
-def get_children(state,is_maximising):
-    return
+def get_children(state_obj, is_maximising):
+    children = []
+    current_a = state_obj.state[0]
+    current_b = state_obj.state[1]
+    
+    moves = [-1, 0, 1] 
+
+    if is_maximising:
+        # Here comes the role of the first plane A
+        for move in moves:
+            next_a = current_a + move
+            # Let's make sure that they are within the range of ten levels
+
+            if 1 <= next_a <= 10:
+                # We create a new object from the State for each movement
+                new_aircraft_a = Aircraft(next_a, state_obj.first_aircraft.target)
+                new_state = State(new_aircraft_a, state_obj.second_aircraft)
+                children.append(new_state)
+    else:
+        # Here comes the role of the Second plane B
+        for move in moves:
+            next_b = current_b + move
+            # Let's make sure that they are within the range of ten levels
+
+            if 1 <= next_b <= 10:
+                # We create a new object from the State for each movement
+                new_aircraft_b = Aircraft(next_b, state_obj.second_aircraft.target)
+                new_state = State(state_obj.first_aircraft, new_aircraft_b)
+                children.append(new_state)
+                
+    return children
 
 def deviation(state):
     return
