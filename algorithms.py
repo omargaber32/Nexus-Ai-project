@@ -5,33 +5,37 @@ def alpha_beta(state , depth ,alpha , beta,is_maximising, results):
         results['nodes_evaluated']+=1
         if is_conflict(state) :
             results['conflicts']+=1
-        return evaluate(state)
+        return evaluate(state) ,[]
     
     if is_maximising:
         max_eval = float('-inf')
+        best_path=[]
         state.children = get_children(state,is_maximising)
         for child in state.children:
-            child.value = alpha_beta(child, depth-1, alpha, beta, False, results)
-            max_eval = max(max_eval, child.value)
+            child.value ,path = alpha_beta(child, depth-1, alpha, beta, False, results)
+            if child.value > max_eval:
+                max_eval = child.value
+                best_path = [child]+path
             alpha = max(alpha, child.value)
             if beta <= alpha :
                 break
-        return max_eval
+        return max_eval, best_path
 
     if not is_maximising:
         min_eval = float('inf')
+        best_path=[]
         state.children = get_children(state,is_maximising)
         for child in state.children:
-            child.value = alpha_beta(child, depth-1, alpha, beta, True, results)
-            min_eval = min(min_eval, child.value)
+            child.value ,path= alpha_beta(child, depth-1, alpha, beta, True, results)
+            if child.value < min_eval:
+                min_eval = child.value
+                best_path = [child]+path
             beta = min(beta, child.value)
             if beta <= alpha :
                 break
-        return min_eval
+        return min_eval , best_path
 
-def best_sequence(state,best):
-    sequence=[]
-    return sequence  
+
 
 def minimax(self,state , depth ,alpha , beta,is_maximising ):
     return
