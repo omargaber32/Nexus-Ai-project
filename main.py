@@ -13,7 +13,11 @@ results = {
     'nodes_evaluated' : 0,
     'eval' : 0
 }
-results['eval']=alpha_beta(initial_state, 6, float('-inf'), float('inf'), True, results)
+results['eval'],path=alpha_beta(initial_state, 6, float('-inf'), float('inf'), True, results)
+for state in path :
+    results['decision_sequence_first'].append(state.state[0])
+    results['decision_sequence_second'].append(state.state[1])
+
 is_conflict_avoided(results)
 
 print("Welcom  to the ai project")
