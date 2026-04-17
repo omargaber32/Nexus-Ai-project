@@ -52,5 +52,36 @@ def get_children(state_obj, is_maximising):
                 
     return children
 
-def deviation(state):
-    return
+def deviation(state,results):
+    #total deviation = summation of ( Actual position - planned position ) 
+    # the divation of A
+    deviation_A = 0
+
+    for plannedStep , actualStep in zip(setPlannedStepsInList(state.state[0],state.target[0]),results['decision_sequence_first']) : 
+        temp = actualStep -plannedStep 
+        deviation_A += temp
+    
+    # the divation of B
+    deviation_B = 0
+
+    for plannedStep , actualStep in zip(setPlannedStepsInList(state.state[1],state.target[1]),results['decision_sequence_second']) : 
+        temp = actualStep -plannedStep  
+        deviation_B += temp
+    
+    return [deviation_A,deviation_B]
+
+def setPlannedStepsInList(s,t) :
+    plannedList =[]
+
+    if s <= t :
+        update = 1
+        stopCondition = t+1
+    else :
+        update = -1
+        stopCondition = t-1
+    
+    for i in range(s,stopCondition,update) : 
+        plannedList.append(i)
+
+    return plannedList 
+

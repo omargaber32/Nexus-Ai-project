@@ -1,8 +1,8 @@
 from algorithms import alpha_beta, is_conflict_avoided, best_sequence, minimax
 from state import Aircraft ,State 
 #config 0
-A = Aircraft(8,5)
-B = Aircraft(6,3)
+A = Aircraft(3,8)
+B = Aircraft(5,2)
 initial_state = State(A,B)
 
 results = {
