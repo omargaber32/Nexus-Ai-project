@@ -37,8 +37,29 @@ def alpha_beta(state , depth ,alpha , beta,is_maximising, results):
 
 
 
-def minimax(self,state , depth ,alpha , beta,is_maximising ):
-    return
+def minimax(self,state , depth ,is_maximising ,results):
+
+    if is_terminal(state) or depth == 0 :
+        results['nodes_evaluated_minimax'] += 1
+        return evaluate(state)
+    
+    if is_maximising :
+        max_eval = float('-inf')
+        state.children = get_children(state,True)
+        
+        for child in state.children :
+            eval = minimax(child,depth-1,False,results)
+            max_eval = max(max_eval,eval)
+        return max_eval
+    else :
+        min_eval = float('inf')
+        state.children = get_children(state,False)
+
+        for child in state.children :
+            eval = minimax(state,depth-1,True,results)
+            min_eval = min(min_eval,eval)
+        return min_eval
+
     
 #should be moved later  
 def is_conflict_avoided(results):

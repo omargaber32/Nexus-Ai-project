@@ -11,7 +11,8 @@ results = {
     'decision_sequence_second' : [],
     'is_conflict_avoided' : '',
     'nodes_evaluated' : 0,
-    'eval' : 0
+    'eval' : 0,
+    'nodes_evaluated_minimax' : 0
 }
 results['eval'],path=alpha_beta(initial_state, 6, float('-inf'), float('inf'), True, results)
 for state in path :
