@@ -58,8 +58,8 @@ def get_children(state_obj, is_maximising):
 
             if 1 <= next_a <= 10:
                 # We create a new object from the State for each movement
-                new_aircraft_a = Aircraft(next_a, state_obj.first_aircraft.target)
-                new_state = State(new_aircraft_a, state_obj.second_aircraft)
+                new_aircraft_a = Aircraft(next_a, state_obj.target[0])
+                new_state = State(new_aircraft_a, Aircraft(state_obj.state[1],state_obj.target[1]))
                 children.append(new_state)
     else:
         # Here comes the role of the Second plane B
@@ -69,8 +69,8 @@ def get_children(state_obj, is_maximising):
 
             if 1 <= next_b <= 10:
                 # We create a new object from the State for each movement
-                new_aircraft_b = Aircraft(next_b, state_obj.second_aircraft.target)
-                new_state = State(state_obj.first_aircraft, new_aircraft_b)
+                new_aircraft_b = Aircraft(next_b, state_obj.target[1])
+                new_state = State(Aircraft(state_obj.state[0],state_obj.target[0]), new_aircraft_b)
                 children.append(new_state)
                 
     return children

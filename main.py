@@ -1,4 +1,4 @@
-from algorithms import alpha_beta, is_conflict_avoided, best_sequence, minimax
+from algorithms import alpha_beta, is_conflict_avoided, minimax
 from state import Aircraft ,State 
 #config 0
 A = Aircraft(3,8)
@@ -15,6 +15,7 @@ results = {
     'nodes_evaluated_minimax' : 0
 }
 results['eval'],path=alpha_beta(initial_state, 6, float('-inf'), float('inf'), True, results)
+print(results['eval'])
 for state in path :
     results['decision_sequence_first'].append(state.state[0])
     results['decision_sequence_second'].append(state.state[1])
