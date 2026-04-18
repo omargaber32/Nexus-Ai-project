@@ -37,7 +37,7 @@ def alpha_beta(state , depth ,alpha , beta,is_maximising, results):
 
 
 
-def minimax(self,state , depth ,is_maximising ,results):
+def minimax(state , depth ,is_maximising ,results):
 
     if is_terminal(state) or depth == 0 :
         results['nodes_evaluated_minimax'] += 1
