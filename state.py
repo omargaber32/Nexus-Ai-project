@@ -12,13 +12,36 @@ class State:
         self.value = value
 
 def is_conflict(state):
-    return
+    if state.state[0]==state.state[1]:
+        return True
+    else:
+        return False
 
 def is_terminal(state):
-    return
+    if is_conflict(state):
+        return True
+
+    if state.state[0] == state.target[0]:
+        return True
+    
+    return False
 
 def evaluate(state):
-    return
+    if is_conflict(state) == True:
+        return -10000
+
+    A_position = state.state[0]
+    B_position = state.state[1]
+
+    A_target = state.target[0]
+    B_target = state.target[1]
+
+    A_distance = abs(A_position - A_target)
+    B_distance = abs(B_position - B_target)
+
+    final_score = -A_distance + B_distance
+
+    return final_score
 
 def get_children(state_obj, is_maximising):
     children = []
