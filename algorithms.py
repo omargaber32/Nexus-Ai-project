@@ -2,7 +2,7 @@ from state import Aircraft, State, is_conflict ,is_terminal, evaluate, get_child
 def alpha_beta(state , depth ,alpha , beta,is_maximising, results):
     
     if is_terminal(state) or depth == 0 :
-        results['nodes_evaluated']+=1
+        results['nodes_evaluated'].append(state.state)
         if is_conflict(state) :
             results['conflicts']+=1
         return evaluate(state) ,[]
@@ -40,7 +40,7 @@ def alpha_beta(state , depth ,alpha , beta,is_maximising, results):
 def minimax(state , depth ,is_maximising ,results):
 
     if is_terminal(state) or depth == 0 :
-        results['nodes_evaluated_minimax'] += 1
+        results['nodes_evaluated_minimax'].append(state.state)
         return evaluate(state)
     
     if is_maximising :
