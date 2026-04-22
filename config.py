@@ -33,7 +33,15 @@ class Config:
 
 
     def reset_results(results):  
-        return
+        results['conflicts'] = 0
+        results['decision_sequence_first'] = []
+        results['decision_sequence_second'] = []
+        results['is_conflict_avoided'] = ''
+        results['nodes_evaluated'] = []
+        results['value'] = 0
+        results['nodes_evaluated_minimax'] = []
+        results['deviation_first'] = 0
+        results['deviation_second'] = 0
     
     def save_results(results):
         return
