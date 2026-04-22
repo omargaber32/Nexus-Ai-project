@@ -14,6 +14,10 @@ class Config:
     }
 
     def __init__(self, a_start,a_target, b_start , b_target,maximising = True,depth=6,alpha=float('-inf'),beta=float('inf')):
+        def validate (val):
+            if val < 0: return 0
+            if val > 10: return 10
+            return val
         #add data validation
         self.a_start = a_start
         self.a_target = a_target
@@ -28,7 +32,7 @@ class Config:
         self.reset_results(self.results)
 
 
-    def reset_results(results):
+    def reset_results(results):  
         return
     
     def save_results(results):
