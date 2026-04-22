@@ -1,5 +1,7 @@
+from algorithms import *
+from state import *
+container = []
 class Config:
-    container = []
 
     results = {
     'conflicts' : 0,
@@ -44,7 +46,7 @@ class Config:
         results['deviation_second'] = 0
     
     def save_results(results):
-        return
+        container.extends(results.values())
     
     def outcomes(results):
         return
