@@ -1,18 +1,18 @@
 class Aircraft:
     def __init__(self,start,target):
-        self.start = start
+        self.current = start
         self.target = target
     
 
 class State:
-    def __init__(self, first_aircraft, second_aircraft, children=None , value=None):
-        self.state = [first_aircraft.start,second_aircraft.start]
+    def __init__(self, first_aircraft, second_aircraft, next_movements=None , value=None):
+        self.current = [first_aircraft.current,second_aircraft.current]
         self.target = [first_aircraft.target,second_aircraft.target]
-        self.children = children
+        self.next_movements = next_movements
         self.value = value
 
 def is_conflict(state):
-    if state.state[0]==state.state[1]:
+    if state.current[0]==state.current[1]:
         return True
     else:
         return False
@@ -21,7 +21,7 @@ def is_terminal(state):
     if is_conflict(state):
         return True
 
-    if state.state[0] == state.target[0]:
+    if state.current[0] == state.target[0]:
         return True
     
     return False
@@ -30,8 +30,8 @@ def evaluate(state):
     if is_conflict(state) == True:
         return -10000
 
-    A_position = state.state[0]
-    B_position = state.state[1]
+    A_position = state.current[0]
+    B_position = state.current[1]
 
     A_target = state.target[0]
     B_target = state.target[1]
@@ -43,10 +43,10 @@ def evaluate(state):
 
     return final_score
 
-def get_children(state_obj, is_maximising):
-    children = []
-    current_a = state_obj.state[0]
-    current_b = state_obj.state[1]
+def get_next_movements(state_obj, is_maximising):
+    next_movements = []
+    current_a = state_obj.current[0]
+    current_b = state_obj.current[1]
     
     moves = [-1, 0, 1] 
 
@@ -59,8 +59,8 @@ def get_children(state_obj, is_maximising):
             if 1 <= next_a <= 10:
                 # We create a new object from the State for each movement
                 new_aircraft_a = Aircraft(next_a, state_obj.target[0])
-                new_state = State(new_aircraft_a, Aircraft(state_obj.state[1],state_obj.target[1]))
-                children.append(new_state)
+                new_state = State(new_aircraft_a, Aircraft(state_obj.current[1],state_obj.target[1]))
+                next_movements.append(new_state)
     else:
         # Here comes the role of the Second plane B
         for move in moves:
@@ -70,17 +70,17 @@ def get_children(state_obj, is_maximising):
             if 1 <= next_b <= 10:
                 # We create a new object from the State for each movement
                 new_aircraft_b = Aircraft(next_b, state_obj.target[1])
-                new_state = State(Aircraft(state_obj.state[0],state_obj.target[0]), new_aircraft_b)
-                children.append(new_state)
+                new_state = State(Aircraft(state_obj.current[0],state_obj.target[0]), new_aircraft_b)
+                next_movements.append(new_state)
                 
-    return children
+    return next_movements
 
 def deviation(state,results):
     #total deviation = summation of ( Actual position - planned position ) 
     # the divation of A
     deviation_A = 0
 
-    for plannedStep , actualStep in zip(setPlannedSteps(state.state[0],state.target[0]),results['decision_sequence_first']) : 
+    for plannedStep , actualStep in zip(setPlannedSteps(state.current[0],state.target[0]),results['decision_sequence_first']) : 
         temp = plannedStep -actualStep 
         if(temp > 0):
          deviation_A += temp
@@ -88,7 +88,7 @@ def deviation(state,results):
     # the divation of B
     deviation_B = 0
 
-    for plannedStep , actualStep in zip(setPlannedSteps(state.state[1],state.target[1]),results['decision_sequence_second']) : 
+    for plannedStep , actualStep in zip(setPlannedSteps(state.current[1],state.target[1]),results['decision_sequence_second']) : 
         temp = plannedStep -actualStep
         if(temp > 0):  
             deviation_B += temp

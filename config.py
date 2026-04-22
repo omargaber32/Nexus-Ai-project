@@ -1,4 +1,4 @@
-class config:
+class Config:
     container = []
 
     results = {
@@ -7,7 +7,7 @@ class config:
     'decision_sequence_second' : [],
     'is_conflict_avoided' : '',
     'nodes_evaluated' : [],
-    'eval' : 0,
+    'value' : 0,
     'nodes_evaluated_minimax' : [],
     'deviation_first':0,
     'deviation_second':0

@@ -11,17 +11,17 @@ results = {
     'decision_sequence_second' : [],
     'is_conflict_avoided' : '',
     'nodes_evaluated' : [],
-    'eval' : 0,
+    'value' : 0,
     'nodes_evaluated_minimax' : [],
     'deviation_first':0,
     'deviation_second':0
 }
 minimax(initial_state,6,True,results)
-results['eval'],path=alpha_beta(initial_state, 6, float('-inf'), float('inf'), True, results)
-print(results['eval'])
+results['value'],path=alpha_beta(initial_state, 6, float('-inf'), float('inf'), True, results)
+print(results['value'])
 for state in path :
-    results['decision_sequence_first'].append(state.state[0])
-    results['decision_sequence_second'].append(state.state[1])
+    results['decision_sequence_first'].append(state.current[0])
+    results['decision_sequence_second'].append(state.current[1])
 print(results['conflicts'])
 print(results['nodes_evaluated'])
 print(results['nodes_evaluated_minimax'])
