@@ -1,5 +1,5 @@
-from algorithms import *
-from state import *
+from algorithms import alpha_beta, minimax, is_conflict_avoided
+from state import deviation, State
 container = []
 class Config:
 
@@ -29,6 +29,11 @@ class Config:
         self.depth = depth
         self.alpha = alpha
         self.beta = beta
+        current_state = State([a_start, b_start], [a_target, b_target])
+        self.value, self.path = alpha_beta(state=current_state, depth=self.depth, alpha=self.alpha, beta=self.beta, is_maximising=self.maximising, results=self.results)
+        self.minimax_value = minimax(state = self.current_state, depth = self.depth, is_maximising = self.maximising, results = self.results)
+        deviation(current_state, self.results)
+        is_conflict_avoided(self.results)
         self.outcomes(self.results)
         self.save_results(self.results)
         self.reset_results(self.results)
@@ -49,7 +54,24 @@ class Config:
         container.extends(results.values())
     
     def outcomes(results):
-        return
+        print(f"Decision sequence for the first plane: {results['decision_sequence_first']}")
+        print(f"Decision sequence for the second plane: {results['decision_sequence_second']}")
+        print(f"Is conflict avoided: {results['is_conflict_avoided']}")
+        print(f"Deviation for the first plane: {results['deviation_first']}")
+        print(f"Deviation for the second plane: {results['deviation_second']}")
+        #Organize the output in a table format
+        print("\n" + "="*70)
+        print(f"{'Nodes evaluated alphabeta':<35} | {'Nodes evaluated minimax':<35}")
+        print("-" * 70)
+        #transfer the list of nodes evaluated to string and print only the first 33 characters followed by '...' to indicate that there are more nodes
+        str_ab = str(results['nodes_evaluated'])
+        str_mm = str(results['nodes_evaluated_minimax'])
+        print(f"{str_ab[:33]+'..':<35} | {str_mm[:33]+'..':<35}")
+        #print the lengthes of the nodes evaluated for both algorithms
+        len_ab = len(results['nodes_evaluated'])
+        len_mm = len(results['nodes_evaluated_minimax'])
+        print(f"{'Count: ' + str(len_ab):<35} | {'Count: ' + str(len_mm):<35}")
+        print("="*70 + "\n")
     
     def summary_table(container):
         return
