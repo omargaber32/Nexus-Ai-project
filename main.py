@@ -22,14 +22,16 @@ print(results['value'])
 for state in path :
     results['decision_sequence_first'].append(state.current[0])
     results['decision_sequence_second'].append(state.current[1])
+
 print(results['conflicts'])
 print(results['nodes_evaluated'])
 print(results['nodes_evaluated_minimax'])
 print(results['decision_sequence_first'])
 print(results['decision_sequence_second'])
-deviation(state,results)
+deviation(initial_state,results)
 print(results['deviation_first'])
 print(results['deviation_second'])
+#print(results['deviation_second'])
 is_conflict_avoided(results)
 print(results['is_conflict_avoided'])
 

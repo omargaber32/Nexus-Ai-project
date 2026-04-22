@@ -79,24 +79,23 @@ def deviation(state,results):
     #total deviation = summation of ( Actual position - planned position ) 
     # the divation of A
     deviation_A = 0
-
-    for plannedStep , actualStep in zip(setPlannedSteps(state.current[0],state.target[0]),results['decision_sequence_first']) : 
-        temp = plannedStep -actualStep 
-        if(temp > 0):
-         deviation_A += temp
+    print(state.current[0],state.target[0])
+    plannedPathA = setPlannedSteps(state.current[0],state.target[0])
+    for plannedStep , actualStep in zip(plannedPathA,results['decision_sequence_first']) : 
+        temp = plannedStep - actualStep 
+        deviation_A += abs(temp)
     
     # the divation of B
     deviation_B = 0
-
-    for plannedStep , actualStep in zip(setPlannedSteps(state.current[1],state.target[1]),results['decision_sequence_second']) : 
-        temp = plannedStep -actualStep
-        if(temp > 0):  
-            deviation_B += temp
+    plannedPathB = setPlannedSteps(state.current[1],state.target[1],True)
+    for plannedStep , actualStep in zip(plannedPathB,results['decision_sequence_second']) : 
+        temp = plannedStep - actualStep 
+        deviation_B += abs(temp)
     
     results['deviation_first'] = deviation_A
     results['deviation_second'] = deviation_B
 
-def setPlannedSteps(s,t) :
+def setPlannedSteps(s,t,minimiser = False) :
     plannedList =[]
 
     if s <= t :
@@ -105,12 +104,15 @@ def setPlannedSteps(s,t) :
     else :
         update = -1
         stopCondition = t-1
-    
+    if(minimiser):
+        plannedList.append(s)
     for i in range(0,3) : 
         if update == 1 and s+update <= t or update == -1 and s+update >= t : 
             s+=update
         plannedList.append(s)
         plannedList.append(s)
+    if(minimiser):
+        plannedList.pop()
         
 
     return plannedList 
