@@ -3,7 +3,6 @@ class Aircraft:
         self.current = start
         self.target = target
     
-
 class State:
     def __init__(self, first_aircraft, second_aircraft, next_movements=None , value=None):
         self.current = [first_aircraft.current,second_aircraft.current]
@@ -76,7 +75,7 @@ def get_next_movements(state_obj, is_maximising):
     return next_movements
 
 def deviation(state,results):
-    #total deviation = summation of ( Actual position - planned position ) 
+    #total deviation = summation of ( planned  position - Actual position ) 
     # the divation of A
     deviation_A = 0
     plannedPathA = setPlannedSteps(state.current[0],state.target[0])
@@ -99,10 +98,8 @@ def setPlannedSteps(s,t,minimiser = False) :
 
     if s <= t :
         update = 1
-        stopCondition = t+1
     else :
         update = -1
-        stopCondition = t-1
     if(minimiser):
         plannedList.append(s)
     for i in range(0,3) : 

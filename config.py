@@ -104,49 +104,5 @@ def summary_table():
     headers = ["Field"] + [f"config[{i+1}]" for i in range(len(container))]
 
     print(tabulate(rows, headers=headers, tablefmt="rounded_grid"))
-# def summary_table():
-#     #Side titles
-#     row_names = [
-#         "Path of A",
-#         "Path of B",
-#         "Deviation of A",
-#         "Deviation of B",
-#         "Len(Nodes evaluated alphabeta)",
-#         "Is conflict avoided"
-#     ]
-#     #Count the elements which add to each config in the container
-#     num_attributes = 8
-#     col_width = 25
-#     header_width = 30
-#     # Calculate the number of the configs which in the container
-#     num_configs = len(container) 
-#     # Print the header
-#     header_row = f"{'Attribute':<{header_width}}"
-#     for i in range(num_configs):
-#         header_row += f"| {'Config ' + str(i+1):<{col_width}}"
-#     print("\n" + "=" * len(header_row))
-#     print(header_row)
-#     print("-" * len(header_row))
-#     # print rows via pull the values with index
-#     i = 0
-#     for name in row_names:
-#         if i == len(container):
-#                 break
-#         row_str = f"{name:<{header_width}}"
-#         for c_idx in range(num_configs):
-            
-#             #Determine the location of the value based on its order in results
-#             if name == "Path of A": val = container[i]['decision_sequence_first']
-#             elif name == "Path of B": val = container[i]['decision_sequence_second']
-#             elif name == "Deviation of A": val = container[i]['deviation_first']
-#             elif name == "Deviation of B": val = container[i]['deviation_second']
-#             elif name == "Len(Nodes evaluated alphabeta)": val = len(container[i]['nodes_evaluated'])
-#             elif name == "Is conflict avoided": val = container[i]['is_conflict_avoided']
-#             row_str += f"| {str(val)[:20]:<{col_width}}"
-#         print(row_str)
-    
-#     i+=1
-        
 
-#     print("=" * len(header_row) + "\n")
     
