@@ -23,7 +23,7 @@ def alpha_beta(state , depth ,alpha , beta,is_maximising, results):
 
     if not is_maximising:
         min_value = float('inf')
-        best_path=[]
+        best_path = []
         state.next_movements = get_next_movements(state,is_maximising)
         for next_movement in state.next_movements:
             next_movement.value ,path= alpha_beta(next_movement, depth-1, alpha, beta, True, results)
@@ -63,9 +63,9 @@ def minimax(state , depth ,is_maximising ,results):
     
 #should be moved later  
 def is_conflict_avoided(results):
-    if  results['value'] != -10000 and results['conflicts'] == 0 :
+    if  results['conflicts'] == 0 :
         results['is_conflict_avoided'] = 'Conflict can not happen'
-    if  results['value'] == -10000 and results['conflicts'] > 0 :
+    if  results['value'] == -10000  :
         results['is_conflict_avoided'] = 'Conflict happened'
     if  results['value'] != -10000 and results['conflicts'] > 0 :
         results['is_conflict_avoided'] = 'Conflict avoided'
