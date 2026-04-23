@@ -79,7 +79,6 @@ def deviation(state,results):
     #total deviation = summation of ( Actual position - planned position ) 
     # the divation of A
     deviation_A = 0
-    print(state.current[0],state.target[0])
     plannedPathA = setPlannedSteps(state.current[0],state.target[0])
     for plannedStep , actualStep in zip(plannedPathA,results['decision_sequence_first']) : 
         temp = plannedStep - actualStep 
