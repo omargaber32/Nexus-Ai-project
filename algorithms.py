@@ -56,7 +56,7 @@ def minimax(state , depth ,is_maximising ,results):
         state.next_movements = get_next_movements(state,False)
 
         for next_movement in state.next_movements :
-            eval = minimax(state,depth-1,True,results)
+            eval = minimax(next_movement,depth-1,True,results)
             min_value = min(min_value,eval)
         return min_value
 

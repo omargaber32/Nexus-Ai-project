@@ -1,4 +1,3 @@
-
 import sys
 import os
 
@@ -17,45 +16,14 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
-from config import Config, container
+from config import container
+from state import setPlannedSteps
 
-# Constants 
+#  Constants 
 
 DOWNLOAD_DIR = "./"
 
-# Helpers 
-
-def run_configs():
-    """Execute all configurations and enrich container with chart metadata."""
-    container.clear()
-    configs = [
-        Config(5, 8, 6, 3),
-        Config(1, 2, 2, 1),
-        Config(-1, 15, 99, 8),
-        Config(10, 8, 2, 5),
-        Config(2,4,5,6)
-    ]
-    # Attach validated start/target so the chart can draw planned paths
-    for i, c in enumerate(configs):
-        container[i]["a_start"] = c.a_start
-        container[i]["a_target"] = c.a_target
-        container[i]["b_start"] = c.b_start
-        container[i]["b_target"] = c.b_target
-    return configs
-
-
-def get_planned_path(start: int, target: int, num_steps: int) -> list:
-    """Shortest-path plan: climb/descend 1 per step, then hold at target."""
-    path = [start]
-    for _ in range(num_steps):
-        cur = path[-1]
-        if cur < target:
-            path.append(min(cur + 1, target))
-        elif cur > target:
-            path.append(max(cur - 1, target))
-        else:
-            path.append(cur)
-    return path
+#  Helpers 
 
 
 def _sep() -> QFrame:
@@ -66,7 +34,8 @@ def _sep() -> QFrame:
     return line
 
 
-# Flight Chart 
+#  Flight Chart 
+
 
 class FlightChart(FigureCanvas):
     """Matplotlib line chart of two aircraft paths, embedded in PySide6."""
@@ -100,27 +69,33 @@ class FlightChart(FigureCanvas):
         full_a = [a0] + path_a
         full_b = [b0] + path_b
         steps = list(range(len(full_a)))
+        n = len(full_a)
 
-        # X = altitude,  Y = step
-        ax.plot(full_a, steps, "o-", color=self.COLOR_A, lw=2.3, ms=7,
+        # X = step,  Y = altitude
+        ax.plot(steps, full_a, "o-", color=self.COLOR_A, lw=2.3, ms=7,
                 mfc="white", mew=2, label="Aircraft A", zorder=5)
-        ax.plot(full_b, steps, "s-", color=self.COLOR_B, lw=2.3, ms=7,
+        ax.plot(steps, full_b, "s-", color=self.COLOR_B, lw=2.3, ms=7,
                 mfc="white", mew=2, label="Aircraft B", zorder=5)
 
         if self.show_planned:
-            pa = get_planned_path(a0, at, len(steps) - 1)
-            pb = get_planned_path(b0, bt, len(steps) - 1)
-            ax.plot(pa, steps, "--", color=self.COLOR_A, lw=1.4, alpha=0.35,
-                    label="Planned A", zorder=3)
-            ax.plot(pb, steps, "--", color=self.COLOR_B, lw=1.4, alpha=0.35,
-                    label="Planned B", zorder=3)
+            # Use setPlannedSteps from state.py for planned paths
+            planned_a = [a0] + setPlannedSteps(a0, at)
+            planned_b = [b0] + setPlannedSteps(b0, bt,True)
+            # Truncate to match actual path length
+            planned_a = planned_a[:n]
+            planned_b = planned_b[:n]
 
-        ax.set_xlabel("Altitude Level", fontsize=11, color="#444", labelpad=8)
-        ax.set_ylabel("Step", fontsize=11, color="#444", labelpad=8)
-        ax.set_xlim(0.5, 10.5)
-        ax.set_xticks(range(1, 11))
-        ax.set_ylim(-0.3, max(len(steps) - 0.3, 6.3))
-        ax.set_yticks(range(0, max(len(steps), 7)))
+            ax.plot(steps[:n], planned_a, "--", color=self.COLOR_A, lw=1.4,
+                    alpha=0.35, label="Planned A", zorder=3)
+            ax.plot(steps[:n], planned_b, "--", color=self.COLOR_B, lw=1.4,
+                    alpha=0.35, label="Planned B", zorder=3)
+
+        ax.set_xlabel("Step", fontsize=11, color="#444", labelpad=8)
+        ax.set_ylabel("Altitude Level", fontsize=11, color="#444", labelpad=8)
+        ax.set_xlim(-0.3, max(n - 0.7, 6.7))
+        ax.set_xticks(range(0, max(n, 7)))
+        ax.set_ylim(0.5, 10.5)
+        ax.set_yticks(range(1, 11))
         ax.tick_params(colors="#666", labelsize=9)
         ax.grid(False)
         for spine in ax.spines.values():
@@ -136,7 +111,7 @@ class FlightChart(FigureCanvas):
         self._draw()
 
 
-# Config Tab 
+#  Config Tab 
 
 
 class ConfigTab(QWidget):
@@ -164,12 +139,12 @@ class ConfigTab(QWidget):
         lay.setSpacing(14)
         lay.setContentsMargins(24, 18, 24, 18)
 
-        # Chart 
+        #  Chart 
         self.chart = FlightChart(self.data, self)
         self.chart.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         lay.addWidget(self.chart)
 
-        # Planned-path checkbox 
+        #  Planned-path checkbox
         self.cb = QCheckBox("Show Planned Paths")
         self.cb.setChecked(True)
         self.cb.toggled.connect(self.chart.toggle_planned)
@@ -181,15 +156,15 @@ class ConfigTab(QWidget):
 
         lay.addWidget(_sep())
 
-        # Outcome labels 
+        #  Outcome labels
         grid = QGridLayout()
         grid.setSpacing(8)
         outcomes = [
-            ("Path of Aircraft A:",    self.data.get("decision_sequence_first", [])),
-            ("Path of Aircraft B:",    self.data.get("decision_sequence_second", [])),
+            ("Path of Aircraft A:",      self.data.get("decision_sequence_first", [])),
+            ("Path of Aircraft B:",      self.data.get("decision_sequence_second", [])),
             ("Deviation of Aircraft A:", self.data.get("deviation_first", 0)),
             ("Deviation of Aircraft B:", self.data.get("deviation_second", 0)),
-            ("Conflict Avoided:",      self.data.get("is_conflict_avoided", "N/A")),
+            ("Conflict Avoided:",        self.data.get("is_conflict_avoided", "N/A")),
         ]
         for r, (lbl, val) in enumerate(outcomes):
             k = QLabel(lbl)
@@ -205,7 +180,7 @@ class ConfigTab(QWidget):
 
         lay.addWidget(_sep())
 
-        # Comparison table 
+        #  Comparison table
         title = QLabel("Node Evaluation Comparison")
         title.setFont(QFont("Segoe UI", 12, QFont.Bold))
         title.setStyleSheet("color:#2c3e50;")
@@ -231,7 +206,7 @@ class ConfigTab(QWidget):
 
         lay.addStretch()
 
-        # Navigation buttons 
+        #  Navigation buttons
         nav = QHBoxLayout()
         nav.addStretch()
         if self.idx > 0:
@@ -249,7 +224,7 @@ class ConfigTab(QWidget):
         scroll.setWidget(page)
         outer.addWidget(scroll)
 
-    # small comparison table 
+    #  small comparison table
 
     def _fill_table(self):
         ab = self.data.get("nodes_evaluated", [])
@@ -272,7 +247,7 @@ class ConfigTab(QWidget):
                 i, 1,
                 QTableWidgetItem(str(mm[i]) if i < len(mm) else "\u2014"))
 
-    # "Show All Nodes" popup 
+    #  "Show All Nodes" popup
 
     def _show_all(self):
         ab = self.data.get("nodes_evaluated", [])
@@ -318,7 +293,7 @@ class ConfigTab(QWidget):
         dlg.exec()
 
 
-# Summary Tab 
+#  Summary Tab 
 
 
 class SummaryTab(QWidget):
@@ -374,7 +349,7 @@ class SummaryTab(QWidget):
         save_btn.clicked.connect(self._save_pdf)
         lay.addWidget(save_btn, alignment=Qt.AlignCenter)
 
-    # PDF export 
+    #  PDF export
 
     def _save_pdf(self):
         try:
@@ -464,7 +439,7 @@ class NexusATCRWindow(QMainWindow):
                     lambda _, t=target: self.tabs.setCurrentIndex(t))
 
 
-# Stylesheet 
+#  Stylesheet 
 
 STYLE = """
 QMainWindow {
@@ -560,13 +535,15 @@ QScrollBar::sub-line:vertical {
 """
 
 
-# Entry Point 
+#  Entry Point 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
+
+def launch_gui():
+    """Create and show the GUI window. Call after running all Config objects."""
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication(sys.argv)
     app.setStyleSheet(STYLE)
-
-    _cfgs = run_configs()
 
     win = NexusATCRWindow()
     win.show()

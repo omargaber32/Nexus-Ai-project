@@ -53,6 +53,10 @@ class Config:
             return val
 
     def save_results(self,results):
+        results['a_start'] = self.a_start
+        results['a_target'] = self.a_target
+        results['b_start'] = self.b_start
+        results['b_target'] = self.b_target
         container.append(deepcopy(results))
 
     def reset_results(self,results):  
@@ -104,5 +108,3 @@ def summary_table():
     headers = ["Field"] + [f"config[{i+1}]" for i in range(len(container))]
 
     print(tabulate(rows, headers=headers, tablefmt="rounded_grid"))
-
-    
